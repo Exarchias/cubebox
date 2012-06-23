@@ -129,7 +129,7 @@ sub main {
 			unshift @args, "-c";
 		}
 		elsif ($arg eq "--clean"){
-			rmtree "client",0,0;
+			rmtree "client",0,0	;
 			rmtree "server",0,0;
 			rmtree "shared",0,0;
 		}
