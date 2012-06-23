@@ -1,4 +1,6 @@
+![Cubebox Logo](http://cubebox.bplaced.net/logo_small.png)
 # Cubebox
+
 
 ## Description
 Cubebox is a free, open source 3D open world game.
