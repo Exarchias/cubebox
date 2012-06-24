@@ -61,13 +61,19 @@ sub diff_sum {
 	if(-d $_[0]){
 		chdir($_[0]);
 			
-		my $gitlog= `git log --author=$_[1] -n 1| cat`;
-	
-		$gitlog =~ /^\S*\s(\S*)/;
-		my $rev=$1;
-		print "\n";
-		system "git diff $rev HEAD --name-only | cat";
-		print "\n";
+		my $gitlog= `git log --author=\"$_[1]\" -n 1| cat`;
+		
+		if(length($gitlog)<1){
+			print "There is no author named \"$_[1]\"\n
+					\rHere is a list of known authors:\n";
+			system "git shortlog -s -n | cat";
+		} else {
+			$gitlog =~ /^\S*\s(\S*)/;
+			my $rev=$1;
+			print "\n";
+			system "git diff $rev HEAD --name-only | cat";
+			print "\n";
+		}
 	}
 	chdir($pwd);
 }
