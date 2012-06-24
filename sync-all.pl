@@ -40,7 +40,7 @@ Usage:
 	-l		Sync Shared
 	-s		Sync Server
 	--clean		Remove Subrepos
-	--diff		Display diff summary
+	--diff		Display diff name-only
 
 ---------------------------------------------------------------
 
@@ -60,13 +60,13 @@ sub diff_sum {
 
 	if(-d $_[0]){
 		chdir($_[0]);
-	
+			
 		my $gitlog= `git log --author=$_[1] -n 1| cat`;
 	
 		$gitlog =~ /^\S*\s(\S*)/;
 		my $rev=$1;
 		print "\n";
-		system "git diff $rev HEAD --summary | cat";
+		system "git diff $rev HEAD --name-only | cat";
 		print "\n";
 	}
 	chdir($pwd);
@@ -190,10 +190,10 @@ sub main {
 				diff_sum(".", $uname);
 				printf(("-"x63)."\n\n");
 				unshift @args, "$uname";
-				unshift @args, "-s";
+				unshift @args, "-l";
 				unshift @args, "--diff";
 				unshift @args, "$uname";
-				unshift @args, "-l";
+				unshift @args, "-s";
 				unshift @args, "--diff";
 				unshift @args, "$uname";
 				unshift @args, "-c";
