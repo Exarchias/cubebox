@@ -92,7 +92,7 @@ sub diff_sum {
 			$gitlog =~ /^\S*\s(\S*)/;
 			my $rev=$1;
 			print "\n";
-			system "git diff $rev HEAD --name-only | cat";
+			system "git diff $rev HEAD --stat | cat";
 			print "\n";
 		}
 	}
