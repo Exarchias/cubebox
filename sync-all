@@ -121,14 +121,14 @@ sub main {
         elsif ($arg eq "-c"){
 			if (-d "client/.git") {
 				chdir("client");
-				system "git pull $repo[$ro][0]";
+				system "git stash; git pull $repo[$ro][0]";
 			}
 			else {
 				system "mkdir -p client";
 				chdir ("client");
 				system "git init";
 				system "git remote add origin $repo[$ro][0]";
-				system "git pull $repo[$ro][0]"
+				system "git stash; git pull $repo[$ro][0]"
 			}
 				
 			my $arg = shift @args;
@@ -138,14 +138,14 @@ sub main {
         elsif ($arg eq "-l"){
 			if (-d "shared/.git") {
 				chdir("shared");
-				system "git pull $repo[$ro][1]";
+				system "git stash; git pull $repo[$ro][1]";
 			}
 			else {
 				system "mkdir -p shared";
 				chdir ("shared");
 				system "git init";
 				system "git remote add origin $repo[$ro][1]";
-				system "git pull $repo[$ro][1]"
+				system "git stash; git pull $repo[$ro][1]"
 			}
 				
 			my $arg = shift @args;
@@ -155,14 +155,14 @@ sub main {
         elsif ($arg eq "-s"){
 			if (-d "server/.git") {
 				chdir("server");
-				system "git pull $repo[$ro][2]";
+				system "git stash; git pull $repo[$ro][2]";
 			}
 			else {
 				system "mkdir -p server";
 				chdir ("server");
 				system "git init";
 				system "git remote add origin $repo[$ro][2]";
-				system "git pull $repo[$ro][2]"
+				system "git stash; git pull $repo[$ro][2]"
 			}
 				
 			my $arg = shift @args;
@@ -179,7 +179,7 @@ sub main {
 			unshift @args, "-l";
 			unshift @args, "$arg";
 			unshift @args, "-c";
-			system "git pull $repo[$ro][3]"
+			system "git stash; git pull $repo[$ro][3]"
 		}
 		elsif ($arg eq "--clean"){
 			rmtree "client",0,0;
