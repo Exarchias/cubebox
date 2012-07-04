@@ -1,0 +1,180 @@
+#!/usr/bin/perl -w
+
+#
+# Copyright (c) 2012, The Cubebox Team <http://cubebox.bplaced.net/>
+#
+#
+# This file is part of cubebox.
+#
+# cubebox is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cubebox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cubebox.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+use strict;
+use Cwd;
+use File::Path;
+
+
+my $build_dir="./build";
+my $prefix="/usr/games/cubebox";
+my $flag_update=0;
+
+
+sub help {
+	print <<EOF;
+===============================================================
+
+Usage:
+	./configure 
+				Generate Makefile
+	--build-dir dir		Default ./build
+	--prefix dir		Default /usr/games/cubebox
+	--help			Shows this help
+	--update		Runs sync-all -r -a latest
+	--only-client		Makefile for client only
+	--only-server		Makefile for server only
+	--only-shared		Makefile for shared only
+		
+	
+===============================================================
+
+
+EOF
+	
+}
+
+sub main {
+
+	my $pwd = getcwd();
+    my @args=@_;
+    my $all="";
+
+    while ($#args ne -1) {
+        my $arg = shift @args;
+        
+        if ($arg eq "--help") {
+            help(0);
+            return 0;
+        } elsif($arg eq "--build-dir"){
+			$build_dir = shift @args;
+        } elsif($arg eq "--prefix"){
+			$prefix = shift @args;
+        } elsif($arg eq "--update"){
+			$flag_update = 1;
+        } elsif($arg eq "--only-client"){
+			$all.="client ";
+        } elsif($arg eq "--only-server"){
+			$all.="server ";
+        } elsif($arg eq "--only-shared"){
+			$all.="shared ";
+		} else {
+			print "Unknonw argument $arg\n";
+			return;
+		}
+    }
+    
+    if($flag_update){
+		system "./sync-all -r -a latest";
+		return 0;
+	}
+
+	if($all eq ""){
+		$all="shared client server";
+	}
+	
+	
+	my $cflags;
+	
+	my $cwd=getcwd();
+	
+	my $libs=`find . -name "*.c"|grep "shared/libs/"`;
+	my $shared=`find . -name "*.c" | grep "shared/" |grep -v "/libs/"`;
+	my $client=`find . -name "*.c" | grep "client/"`;
+	my $server=`find . -name "server/*.c"`;
+
+	chdir $cwd;
+		
+	if($^O =~/mswin/i){
+		$cflags="-lSDL -lsdl -lGL -lGLU -lSDL_mixer -lm -lpthread -Dwin"		
+	} else {
+		my $sdl=`sdl-config --libs --cflags`;
+		$cflags="$sdl -lGL -lGLU -Wall -lSDL_mixer -lm -lpthread -lrt"
+	}
+
+	$libs=~s/[.]c/.o/g;
+	$client=~s/[.]c/\.o/g;
+	$shared=~s/[.]c/\.o/g;
+	$server=~s/[.]c/\.o/g;
+	$libs=~s/\n/ /g;
+	$client=~s/\n/ /g;
+	$shared=~s/\n/ /g;
+	$server=~s/\n/ /g;
+	$cflags=~s/\n/ /g;
+	
+    my $makefile="
+INSTALL_PATH=$prefix
+BIN_DIR = /usr/bin/
+BUILD_DIR = $build_dir
+
+CC = gcc
+LD = ld
+CP = cp
+LN = ln
+CHMOD = chmod
+MKDIR = mkdir
+
+CFLAGS=$cflags
+
+all: init $all
+
+init:
+	\${MKDIR} \${BUILD_DIR} -p
+	\${CP} ./shared/etc/ \${BUILD_DIR}/etc -rf
+	\${CP} ./shared/media/ \${BUILD_DIR}/media -rf
+	
+client: libs $client
+	\$(CC) -o \${BUILD_DIR}/cb_cli $libs $client  \$(CFLAGS)
+
+server: libs $server
+	\$(CC) -o \${BUILD_DIR}/cb_ser $libs $server  \$(CFLAGS)
+
+shared: libs $shared
+	\$(CC) -o \${BUILD_DIR}/cb_utils $libs $shared  \$(CFLAGS)
+
+libs: $libs
+	echo done
+
+%.o:%.c
+	\$(CC) -o \$@ -c \$< \$(CFLAGS)
+
+rebuild:
+	superclean
+	all
+
+clean:
+	find ./ -name \"*.o\" -exec rm -rf {} \\;
+
+superclean : clean
+	rm -rf \${BUILD_DIR}
+
+";  
+	open(MAKEFILE, ">Makefile");
+	print MAKEFILE $makefile;
+	close(MAKEFILE);
+    print "You can now run make\n";
+}
+
+main(@ARGV);
+
+ 
