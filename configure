@@ -144,19 +144,19 @@ init:
 	\${CP} ./shared/media/ \${BUILD_DIR}/media -rf
 	
 client: libs $client
-	\$(CC) -o \${BUILD_DIR}/cb_cli $libs $client  \$(CFLAGS)
+	\$(CC) -g -o \${BUILD_DIR}/cb_cli $libs $client  \$(CFLAGS)
 
 server: libs $server
-	\$(CC) -o \${BUILD_DIR}/cb_ser $libs $server  \$(CFLAGS)
+	\$(CC) -g -o \${BUILD_DIR}/cb_ser $libs $server  \$(CFLAGS)
 
 shared: libs $shared
-	\$(CC) -o \${BUILD_DIR}/cb_utils $libs $shared  \$(CFLAGS)
+	\$(CC) -g -o \${BUILD_DIR}/cb_utils $libs $shared  \$(CFLAGS)
 
 libs: $libs
 	echo done
 
 %.o:%.c
-	\$(CC) -o \$@ -c \$< \$(CFLAGS)
+	\$(CC) -g -o \$@ -c \$< \$(CFLAGS)
 
 rebuild:
 	superclean
