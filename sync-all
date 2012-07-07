@@ -54,6 +54,7 @@ Usage:
 		[-s Server(Name|Tag|Version|Checksum)]
 		[--clean]
 		[--diff (-c|-l|-s|-a) username]
+		[--current]
 		
 	-r		Read only
 	-a		Sync Client, Server and Shared		
@@ -62,6 +63,7 @@ Usage:
 	-s		Sync Server
 	--clean		Remove Subrepos
 	--diff		Display diff name-only
+	--current	Build current development version
 
 ---------------------------------------------------------------
 
@@ -116,7 +118,12 @@ sub main {
         
         if ($arg eq "--help") {
             help(0);
-        }
+        } elsif($arg eq "--current"){
+			system "./sync-all -a";
+			system "./configure --only-client";
+			system "make -j9";
+		}
+		
         elsif ($arg eq "-r"){ $ro=1; }
         elsif ($arg eq "-c"){
 			if (-d "client/.git") {
