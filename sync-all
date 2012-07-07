@@ -121,6 +121,8 @@ sub main {
         elsif ($arg eq "-c"){
 			if (-d "client/.git") {
 				chdir("client");
+				
+				print "\n\nStaging client\n";
 				system "git stash; git pull $repo[$ro][0]";
 			}
 			else {
@@ -128,6 +130,8 @@ sub main {
 				chdir ("client");
 				system "git init";
 				system "git remote add origin $repo[$ro][0]";
+				
+				print "\n\nStaging client\n";
 				system "git stash; git pull $repo[$ro][0]"
 			}
 				
@@ -138,6 +142,8 @@ sub main {
         elsif ($arg eq "-l"){
 			if (-d "shared/.git") {
 				chdir("shared");
+				
+				print "\n\nStaging shared\n";
 				system "git stash; git pull $repo[$ro][1]";
 			}
 			else {
@@ -145,6 +151,8 @@ sub main {
 				chdir ("shared");
 				system "git init";
 				system "git remote add origin $repo[$ro][1]";
+				
+				print "\n\nStaging shared\n";
 				system "git stash; git pull $repo[$ro][1]"
 			}
 				
@@ -155,6 +163,8 @@ sub main {
         elsif ($arg eq "-s"){
 			if (-d "server/.git") {
 				chdir("server");
+				
+				print "\n\nStaging server\n";
 				system "git stash; git pull $repo[$ro][2]";
 			}
 			else {
@@ -162,6 +172,8 @@ sub main {
 				chdir ("server");
 				system "git init";
 				system "git remote add origin $repo[$ro][2]";
+				
+				print "\n\nStaging server\n";
 				system "git stash; git pull $repo[$ro][2]"
 			}
 				
@@ -179,6 +191,8 @@ sub main {
 			unshift @args, "-l";
 			unshift @args, "$arg";
 			unshift @args, "-c";
+			
+			print "\n\nStaging cubebox\n";
 			system "git stash; git pull $repo[$ro][3]"
 		}
 		elsif ($arg eq "--clean"){
