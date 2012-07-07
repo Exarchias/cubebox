@@ -119,6 +119,7 @@ sub main {
         if ($arg eq "--help") {
             help(0);
         } elsif($arg eq "--current"){
+			system "make superclean";
 			system "./sync-all -a";
 			system "./configure --only-client";
 			system "make -j9";
