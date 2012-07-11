@@ -109,7 +109,7 @@ sub main {
 		$cflags="-lSDL -lsdl -lGL -lGLU -lSDL_mixer -lm -lpthread -Dwin"		
 	} else {
 		my $sdl=`sdl-config --libs --cflags`;
-		$cflags="$sdl -lGL -lGLU -Wall -lSDL_mixer -lm -lpthread -lrt"
+		$cflags="$sdl -lGL -lGLU -Wall -lSDL_mixer -lm -lpthread -lrt -DSHM -lXext"
 	}
 
 	$libs=~s/[.]c/.o/g;
