@@ -105,11 +105,10 @@ sub main {
 
 	chdir $cwd;
 		
-	if($^O =~/mswin/i){
-		$cflags="-lSDL -lsdl -lGL -lGLU -lSDL_mixer -lm -lpthread -Dwin"		
+	if(($^O =~/win/i) && !($^O =~/darwin/i)){
+		$cflags=" -lGL -lGLU -lGLUT -lportaudio -lm -lpthread -DWIN"
 	} else {
-		my $sdl=`sdl-config --libs --cflags`;
-		$cflags="$sdl -lGL -lGLU -Wall -lSDL_mixer -lm -lpthread -lrt -DSHM -lXext"
+		$cflags=" -lGL -lGLU -lGLUT -Wall -lportaudio -lm -lpthread -lrt -DSHM -lXext "
 	}
 
 	$libs=~s/[.]c/.o/g;
