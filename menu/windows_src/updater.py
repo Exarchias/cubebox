@@ -9,15 +9,15 @@ import subprocess
 import urllib2
 
 
-request = urllib2.Request("http://www.cubebox.bplaced.net/version")
+versionfile = open("version", "r")
+oldversion = versionfile.read()
+versionfile.close()
+
+request = urllib2.Request("http://www.cubebox.bplaced.net/version.php?v="+oldversion)
 handle = urllib2.urlopen(request)
 versioninformations = handle.read().split('\n')
 newversion = versioninformations.pop(0)
 handle.close()
-
-versionfile = open("version", "r")
-oldversion = versionfile.read()
-versionfile.close()
 
 if oldversion != newversion:
 	print "The new version '" + newversion + "' is available."
@@ -30,7 +30,6 @@ if oldversion != newversion:
 	print "Downloading updates..."
 
 	for filename in versioninformations:
-		print filename
 		request = urllib2.Request("http://www.cubebox.bplaced.net/updates/" + filename)
 		handle = urllib2.urlopen(request)
 		
@@ -43,11 +42,11 @@ if oldversion != newversion:
 		localfile.close()
 		handle.close()
 
-		print "Updated '" + filename + "'"
-		
 		if filename == "updater.exe":
 			subprocess.call(["updater_update.exe"])
 			quit()
+		
+		print "Updated '" + filename + "'"
 		
 	print ""
 	print "Update downloaded and sucessfully installed!..."

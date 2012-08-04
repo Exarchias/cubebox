@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 360
+  Left = 262
   Height = 462
-  Top = 201
+  Top = 155
   Width = 563
   BorderStyle = bsDialog
   Caption = 'Cubebox'
@@ -67,21 +67,23 @@ object Form1: TForm1
   end
   object Edit1: TEdit
     Left = 224
-    Height = 23
+    Height = 28
     Top = 30
     Width = 304
     TabOrder = 0
   end
   object Edit2: TEdit
     Left = 224
-    Height = 23
+    Height = 28
     Top = 80
     Width = 304
+    EchoMode = emPassword
+    PasswordChar = '*'
     TabOrder = 1
   end
   object Edit3: TEdit
     Left = 224
-    Height = 23
+    Height = 28
     Top = 130
     Width = 304
     TabOrder = 2
@@ -89,9 +91,9 @@ object Form1: TForm1
   end
   object Edit4: TEdit
     Left = 224
-    Height = 23
+    Height = 28
     Top = 180
-    Width = 48
+    Width = 64
     TabOrder = 3
     Text = '17777'
   end
