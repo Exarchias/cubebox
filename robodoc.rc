@@ -1,0 +1,4 @@
+#robodoc.rc
+
+ignore files:
+	.*
