@@ -108,7 +108,7 @@ sub main {
 	if(($^O =~/win/i) && !($^O =~/darwin/i)){
 		$cflags=" -lGL -lGLU -lGLUT -lportaudio -lm -lpthread -DWIN"
 	} else {
-		$cflags=" -lGL -lGLU -lGLUT -Wall -lportaudio -lm -lpthread -lrt -DSHM -lXext "
+		$cflags=" -lGL -lGLU -lglut -Wall -lportaudio -lm -lpthread -lrt -DSHM -lXext "
 	}
 
 	$libs=~s/[.]c/.o/g;
