@@ -27,6 +27,14 @@ if oldversion != newversion:
 	if raw_input() != "":
 		quit()
 
+	if newversion[0:4] == "pre-":
+		print "Are you sure you want to update to a \"pre\" version?"
+		print "This version is unstable and it might be buggy!"
+		print "Press return to update or something else and return to quit!"
+
+		if raw_input() != "":
+			quit()
+
 	print "Downloading updates..."
 
 	for filename in versioninformations:
