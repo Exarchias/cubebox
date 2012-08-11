@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, ShellApi;
+  StdCtrls, ExtCtrls, ShellApi, about;
 
 type
 
@@ -16,6 +16,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -28,6 +29,7 @@ type
     procedure Button1Click( Sender: TObject) ;
     procedure Button2Click( Sender: TObject) ;
     procedure Button3Click( Sender: TObject) ;
+    procedure Button4Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -59,7 +61,9 @@ config.Add('username'+ #9 + #9 + Edit1.Text);
 config.Add('password' + #9 + #9 + Edit2.Text);
 config.Add('server_ip' + #9 + #9 + Edit3.Text);
 config.Add('server_port' + #9 + #9 + Edit4.Text);
-config.SaveToFile('res/client.conf');
+
+config.SaveToFile('etc/client.conf');
+config.Destroy();
 
 except
     showmessage('Could not save configurations!');
@@ -67,7 +71,7 @@ end;
 
 try
 
-ShellExecute(handle, 'open', PChar('cubebox.exe'), '', '', 1);
+ShellExecute(handle, 'open', PChar('starter.bat'), '', '', 1);
 Sleep(100);
 close();
 
@@ -82,6 +86,11 @@ begin
      ShellExecute(handle, 'open', PChar('updater.exe'), '', '', 1);
      Sleep(100);
      close();
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  about.aboutForm.Show();
 end;
 
 end.
