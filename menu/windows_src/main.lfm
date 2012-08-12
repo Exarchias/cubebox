@@ -1,12 +1,12 @@
 object Form1: TForm1
   Left = 262
-  Height = 462
+  Height = 484
   Top = 155
-  Width = 563
+  Width = 551
   BorderStyle = bsDialog
   Caption = 'Cubebox'
-  ClientHeight = 462
-  ClientWidth = 563
+  ClientHeight = 484
+  ClientWidth = 551
   Color = clWhite
   LCLVersion = '0.9.30'
   object Label1: TLabel
@@ -100,7 +100,7 @@ object Form1: TForm1
   object Button1: TButton
     Left = 280
     Height = 46
-    Top = 368
+    Top = 424
     Width = 248
     Caption = 'Close'
     Font.CharSet = ANSI_CHARSET
@@ -115,7 +115,7 @@ object Form1: TForm1
   object Button2: TButton
     Left = 280
     Height = 46
-    Top = 312
+    Top = 256
     Width = 248
     Caption = 'Start Game'
     Font.CharSet = ANSI_CHARSET
@@ -130,7 +130,7 @@ object Form1: TForm1
   object Button3: TButton
     Left = 280
     Height = 46
-    Top = 256
+    Top = 312
     Width = 248
     Caption = 'Check for Updates'
     Font.CharSet = ANSI_CHARSET
@@ -3201,5 +3201,20 @@ object Form1: TForm1
       000000000000000000000000000000000000002DAB007F2C9CC8EF0000000049
       454E44AE426082
     }
+  end
+  object Button4: TButton
+    Left = 280
+    Height = 46
+    Top = 368
+    Width = 248
+    Caption = 'About'
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -24
+    Font.Name = 'Arial'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    OnClick = Button4Click
+    ParentFont = False
+    TabOrder = 7
   end
 end
