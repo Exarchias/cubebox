@@ -98,70 +98,120 @@ sub main {
 	
 	my $cwd=getcwd();
 	
-	my $libs=`find . -name "*.c"|grep "shared/libs/"`;
-	my $shared=`find . -name "*.c" | grep "shared/" |grep -v "/libs/"`;
-	my $client=`find . -name "*.c" | grep "client/"`;
-	my $server=`find . -name "server/*.c"`;
+	my $libs="";
+	my $shared="";
+	my $client="";
+	my $server="";
+	my $cc="";
+	my $default_flags="-g -o ";
+	my $linker_flags="-g -o ";
+	my $find="find";
+	my $ld="gcc";
+	my $ldflags="";
+	my $file_ending="";
+	my $additional_files="";
 
 	chdir $cwd;
+
+	if((($^O =~/win/i) && !($^O =~/darwin/i)&& !($^O =~/cygwin/i))|| ($^O =~/msys/i)){
 		
-	if(($^O =~/win/i) && !($^O =~/darwin/i)){
-		$cflags=" -lGL -lGLU -lGLUT -lportaudio -lm -lpthread -DWIN"
+		$cflags="/TC /DWIN /Y- /nologo /MT ";
+
+		$libs=`unixfind . -name "*.c"|grep "shared/libs/"`;
+		$shared=`unixfind . -name "*.c" | grep "shared/" |grep -v "/libs/"`;
+		$client=`unixfind . -name "*.c" | grep "client/"`;
+		$server=`unixfind . -name "*.c" | grep "server/"`;
+
+		$libs=~s/[.]c/.obj/g;
+		$client=~s/[.]c/\.obj/g;
+		$shared=~s/[.]c/\.obj/g;
+		$server=~s/[.]c/\.obj/g;
+
+		$libs=~s/\//\\/g;
+		$client=~s/\//\\/g;
+		$shared=~s/\//\\/g;
+		$server=~s/\//\\/g;
+		
+		$default_flags="/c /I.\\shared\\libs\\extern\\include /Fo";
+		$linker_flags="/nologo /out:";
+		$ldflags="/LIBPATH:.\\shared\\libs\\extern\\lib glut32.lib pthreadVC2.lib";
+		$file_ending=".exe";
+		
+		$cc="cl ";
+		$ld="link";
+		$find="unixfind ";
+		$additional_files="\${CP} ./shared/libs/extern/lib/glut32.dll \${BUILD_DIR}/ -rf\n\t";
+		$additional_files.="\${CP} ./shared/libs/extern/lib/pthreadVC2.dll \${BUILD_DIR}/ -rf";
+		
 	} else {
-		$cflags=" -lGL -lGLU -lglut -Wall -lportaudio -lm -lpthread -lrt -DSHM -lXext "
+		$cflags=" -lGL -lGLU -lglut -Wall -lportaudio -lm -lpthread -lrt -DSHM -lXext -DLINUX";
+
+		$libs=`find . -name "*.c"|grep "shared/libs/"`;
+		$shared=`find . -name "*.c" | grep "shared/" |grep -v "/libs/"`;
+		$client=`find . -name "*.c" | grep "client/"`;
+		$server=`find . -name "*.c" | grep "server/"`;
+
+		$libs=~s/[.]c/.o/g;
+		$client=~s/[.]c/\.o/g;
+		$shared=~s/[.]c/\.o/g;
+		$server=~s/[.]c/\.o/g;
+		
+		$cc="gcc ";
+		$ldflags=$cflags;
 	}
 
-	$libs=~s/[.]c/.o/g;
-	$client=~s/[.]c/\.o/g;
-	$shared=~s/[.]c/\.o/g;
-	$server=~s/[.]c/\.o/g;
 	$libs=~s/\n/ /g;
 	$client=~s/\n/ /g;
 	$shared=~s/\n/ /g;
 	$server=~s/\n/ /g;
 	$cflags=~s/\n/ /g;
-	
+
     my $makefile="
 INSTALL_PATH=$prefix
 BIN_DIR = /usr/bin/
 BUILD_DIR = $build_dir
 
-CC = gcc
-LD = ld
+CC = $cc
+LD = $ld
 CP = cp
 LN = ln
 CHMOD = chmod
 MKDIR = mkdir
 
 CFLAGS=$cflags
+LDFLAGS=$ldflags
 
 all: init $all
 
 init:
 	\${MKDIR} \${BUILD_DIR} -p
-	\${CP} ./shared/etc/ \${BUILD_DIR}/etc -rf
-	\${CP} ./shared/media/ \${BUILD_DIR}/media -rf
+	\${CP} ./shared/etc/ \${BUILD_DIR}/ -rf
+	\${CP} ./shared/media/ \${BUILD_DIR}/ -rf
+	$additional_files
 	
 client: libs $client
-	\$(CC) -g -o \${BUILD_DIR}/cb_cli $libs $client  \$(CFLAGS)
+	\$(LD) $linker_flags\${BUILD_DIR}/cb_cli$file_ending $libs $client  \$(LDFLAGS)
 
 server: libs $server
-	\$(CC) -g -o \${BUILD_DIR}/cb_ser $libs $server  \$(CFLAGS)
+	\$(LD) $linker_flags\${BUILD_DIR}/cb_ser$file_ending $libs $server  \$(LDLAGS)
 
 shared: libs $shared
-	\$(CC) -g -o \${BUILD_DIR}/cb_utils $libs $shared  \$(CFLAGS)
+	\$(LD) $linker_flags\${BUILD_DIR}/cb_utils$file_ending $libs $shared  \$(LDFLAGS)
 
 libs: $libs
 
 %.o:%.c
-	\$(CC) -g -o \$@ -c \$< \$(CFLAGS)
+	\$(CC) $default_flags \$@ -c \$< \$(CFLAGS)
+
+%.obj:%.c
+	\$(CC) $default_flags\$@ \$(CFLAGS) \$<
 
 rebuild:
 	superclean
 	all
 
 clean:
-	find ./ -name \"*.o\" -exec rm -rf {} \\;
+	$find ./ -name \"*.o\" -exec rm -rf {} \\;
 
 superclean: clean
 	rm -rf \${BUILD_DIR}
