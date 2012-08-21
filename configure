@@ -134,13 +134,13 @@ sub main {
 		
 		$default_flags="/c /I.\\shared\\libs\\extern\\include /Fo";
 		$linker_flags="/nologo /out:";
-		$ldflags="/LIBPATH:.\\shared\\libs\\extern\\lib glut32.lib pthreadVC2.lib";
+		$ldflags="/LIBPATH:.\\shared\\libs\\extern\\lib freeglut.lib pthreadVC2.lib";
 		$file_ending=".exe";
 		
 		$cc="cl ";
 		$ld="link";
 		$find="unixfind ";
-		$additional_files="\${CP} ./shared/libs/extern/lib/glut32.dll \${BUILD_DIR}/ -rf\n\t";
+		$additional_files="\${CP} ./shared/libs/extern/lib/freeglut.dll \${BUILD_DIR}/ -rf\n\t";
 		$additional_files.="\${CP} ./shared/libs/extern/lib/pthreadVC2.dll \${BUILD_DIR}/ -rf";
 		
 	} else {
